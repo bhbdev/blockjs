@@ -8,7 +8,6 @@ Block.js is a lightweight JavaScript library designed to simplify the creation a
 - **Customizable**: Highly customizable components to fit your design needs.
 - **Extensible**: Easily extendable with plugins and custom components.
 
-
 ## Usage
 
 Here's a basic example of how to use Block.js:
@@ -34,4 +33,45 @@ Here's a basic example of how to use Block.js:
 </body>
 </html>
 ```
+
+### Using BlockTemplate
+
+`BlockTemplate` allows you to define reusable templates for your blocks. Here's an example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlockTemplate Example</title>
+    <script src="block.js"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const app = document.getElementById('app');
+
+        // Define a template
+        const MyTemplate = new BlockTemplate({
+            blocks: [
+                { type: 'Block', content: 'Hello, BlockTemplate!' },
+                { type: 'ButtonBlock', content: 'Click Me' },
+                { type: 'ListBlock', items: ['Item 1', 'Item 2', 'Item 3'] }
+            ],
+            components: {
+                ButtonBlock,
+                ListBlock,
+                ListItemBlock
+            }
+        });
+
+        // Render the template
+        app.innerHTML = MyTemplate.toString();
+    </script>
+</body>
+</html>
+```
+
+
 
