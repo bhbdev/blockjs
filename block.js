@@ -1,3 +1,19 @@
+/***************************************************************
+____    ___                   __
+/\  _`\ /\_ \                 /\ \            __
+\ \ \L\ \//\ \     ___     ___\ \ \/'\       /\_\    ____
+ \ \  _ <'\ \ \   / __`\  /'___\ \ , <       \/\ \  /',__\
+  \ \ \L\ \\_\ \_/\ \L\ \/\ \__/\ \ \\`\   __ \ \ \/\__, `\
+   \ \____//\____\ \____/\ \____\\ \_\ \_\/\_\_\ \ \/\____/
+    \/___/ \/____/\/___/  \/____/ \/_/\/_/\/_/\ \_\ \/___/
+                                             \ \____/
+                                              \/___/
+
+block.js - Render HTML with JavaScript ¯\_(ツ)_/¯ 
+@author: Beau Bishop - github.com/bhbdev/blockjs
+@version: 0.1.0
+
+***************************************************************/
 
 const Trace = (s) => { console.log(s) }
 const _type = (x) => { return x.constructor.name }
@@ -28,7 +44,7 @@ class BlockInterface {
 
 class Block {
   constructor (obj, template={}, objMap=[]) {
-    this._interface = new BlockInterface(objMap); ///[...BlockInterface, ...objMap];
+    this._interface = new BlockInterface(objMap);
     this.init(obj,template)
   }
   init (obj,template) {
@@ -46,7 +62,6 @@ class Block {
       if (!template) throw 'template null or undefined'
         
      // Trace('template data:' + typeof template.data)
-        
       if (template.data) this.data = template.data
       if (template.$components) {
         this.components = template.$components;
@@ -71,13 +86,11 @@ class Block {
   }
   compile () {
     let res = '';
-    try {
-      
+    try {  
       if (this.format.constructor.name != 'Function')
         throw 'format must be defined as function'
         
       if (this.item) {
-        
         res += this.format(this.item);
       }
       else if (this.items)
@@ -87,8 +100,7 @@ class Block {
           let method = this.items.replace('::','').split(':');
           let datakey = method[0]
           let arg = method.length==2? method[1]:null
-          
-          
+
           if (this.template.data[datakey]) {
             this.items = this.template.data[datakey](arg)
           }
@@ -97,29 +109,17 @@ class Block {
         if (this.items.constructor.name !== 'Array')
           throw 'items must be array'
       
-      
         this.items.forEach((i) => {
-
-            if (typeof i === "string")
-            {
+            if (typeof i === "string") {
               res += this.format(i);
             }
-            else
-            {
-              let block;
-              if (i.constructor.name == 'Object' && i.hasOwnProperty('tag'))
-                block = i
-              else 
-                block = this.format(i);
-              
+            else {
+              let block = (i.constructor.name == 'Object' && i.hasOwnProperty('tag')) ? i : this.format(i);
               let cls = block.type || 'Block';
               res += new this.components[cls](block, this.template) + '\n'
             }
-            
-
         })      
-      }
-      
+      } 
 
     } catch (e) {
       res = 'compile failed: ' + e
@@ -130,31 +130,20 @@ class Block {
   }
   _content() {
     
-
     if (this.block) 
     {
         let blockdef = new this.components[this.block]()
-      
-      Trace('type: ' + _type(blockdef))
-      
-        if (blockdef.constructor.name == 'Array') {
-          
-        }
+        Trace('type: ' + _type(blockdef))
+        // if (blockdef.constructor.name == 'Array') {
+        // }
         return new Block(blockdef,this.template).toString()
-    }
-    
+    }   
 
     if (this.items || this.item)
     {
       //Trace('compiled ' + (this.item? 'item':'items'))
       this.content = this.compile()
-      
     }
-
-    
-    // if (!this.content) {
-    //   this.content = '';
-    // }
     
     if (this.content.constructor.name == 'Object' && this.content.hasOwnProperty('tag'))
     {
@@ -174,8 +163,6 @@ class Block {
       })
       return val;
     }
-
-
     
     if (Object.getPrototypeOf(this.content.constructor).name == 'Block' || this.content.constructor.name == 'Block')
     {
@@ -189,10 +176,8 @@ class Block {
     
   }
   toString() {
-
     if (this.hide===true || typeof this.hide == 'function' && this.hide()) return '';
     if (this.block) return this._content();
-
 //    Trace('render -> ' + this.constructor.name + ' <' + this.tag + '>' )
     let str = `<${this.tag}`;
     str += this.attrs()
@@ -214,7 +199,7 @@ class BlockTemplate {
     const BlockClass = this.template.components ?
                           Object.assign({}, { Block, ...this.template.components })
                         : Object.assign({}, { Block })
-    //Trace(Object.keys(BlockClass).join(','))
+    
     this.template.$components = BlockClass;
     
     let body = ''
